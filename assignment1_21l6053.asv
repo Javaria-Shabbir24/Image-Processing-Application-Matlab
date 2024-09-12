@@ -15,7 +15,7 @@ function assignment1_21l6053
 
     % browse button added in fig window
     % on pushing the browse button, loadtheImage function will load the image
-    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 500, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
+    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 550, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
 
     % Axes to display the loaded image
     axes = uiaxes(fig, 'Position', [350 50 370 500]);
@@ -43,11 +43,11 @@ function assignment1_21l6053
     end
     % Dropdown for file formats while saving the picture
     % selected format is set to saved format using function setSaveFormat
-    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 450, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
+    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 500, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
 
     % Save button added to save the loaded file
     % on pushing the save button, save image function is triggered
-    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
+    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 450, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
     % Function to save the image
     function saveImage()
         if isempty(img) 
@@ -64,7 +64,7 @@ function assignment1_21l6053
     end
     % Image Information Button added
     % when the button is pushed showImageInfo function is called
-    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 350, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
 
     % Function to show image information
     function showImageInfo()
@@ -97,7 +97,7 @@ function assignment1_21l6053
     end
     % Conversion of grayscale image to black and white
     % When the button is pushed, convertToBlackAndWhite function is triggered
-    BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 300, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
+    BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 350, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
 
     % Function to convert image to black and white
     function convertToBlackAndWhite()
@@ -110,7 +110,7 @@ function assignment1_21l6053
     end
     % Crop Button added
     % When the button is pushed, cropImage function is triggered
-    cropButton = uibutton(fig, 'push', 'Text', 'Crop', 'Position', [150, 250, 100, 30], 'ButtonPushedFcn', @(btn, event) cropImage());
+    cropButton = uibutton(fig, 'push', 'Text', 'Crop', 'Position', [150, 300, 100, 30], 'ButtonPushedFcn', @(btn, event) cropImage());
     % Function to crop the image
     function cropImage()
     % if no image is selected
@@ -157,7 +157,7 @@ function assignment1_21l6053
     end
     % Resize button added
     % When the button is pushed, cropImage function is triggered
-    resizeButton = uibutton(fig, 'push', 'Text', 'Resize', 'Position', [150, 200, 100, 30], 'ButtonPushedFcn', @(btn, event) resizeImage());
+    resizeButton = uibutton(fig, 'push', 'Text', 'Resize', 'Position', [150, 250, 100, 30], 'ButtonPushedFcn', @(btn, event) resizeImage());
 
     % Function to resize the image
     function resizeImage()
@@ -177,11 +177,11 @@ function assignment1_21l6053
     end
     % Dropdown for flipping options
     % When the button is pushed, setFlipDirection function is triggered
-    flipDropdown = uidropdown(fig,'Items', {'Vertical', 'Horizontal'},  'Position', [150, 150, 100, 30], 'ValueChangedFcn', @(dd, event) setFlipDirection(dd.Value));
+    flipDropdown = uidropdown(fig,'Items', {'Vertical', 'Horizontal'},  'Position', [150, 200, 100, 30], 'ValueChangedFcn', @(dd, event) setFlipDirection(dd.Value));
 
     % Flip button added
     % When the button is pushed, flipImage function is triggered
-    flipButton = uibutton(fig, 'push', 'Text', 'Flip','Position', [150, 100, 100, 30], 'ButtonPushedFcn', @(btn, event) flipImage());
+    flipButton = uibutton(fig, 'push', 'Text', 'Flip','Position', [150, 150, 100, 30], 'ButtonPushedFcn', @(btn, event) flipImage());
  
     % Function to flip the image
     function flipImage()
@@ -203,11 +203,11 @@ function assignment1_21l6053
     end
     % Dropdown Button to select a combining option
     % When the button is pushed, setCombineMode function is triggered
-    combineDropdown = uidropdown(fig, 'Items', {'Side-by-Side', 'Overlay'},'Position', [150, 50, 100, 30], 'ValueChangedFcn', @(dd, event) setCombineMode(dd.Value));
+    combineDropdown = uidropdown(fig, 'Items', {'Side-by-Side', 'Overlay'},'Position', [120, 100, 160, 30], 'ValueChangedFcn', @(dd, event) setCombineMode(dd.Value));
 
     % Combine button added
     % When the button is pushed, combineImage function is triggered
-    combineButton = uibutton(fig, 'push', 'Text', 'Combine','Position', [150, 0, 100, 30], 'ButtonPushedFcn', @(btn, event) combineImage());
+    combineButton = uibutton(fig, 'push', 'Text', 'Combine','Position', [150, 50, 100, 30], 'ButtonPushedFcn', @(btn, event) combineImage());
 
     % Function to combine two images
     function combineImage()
@@ -226,11 +226,30 @@ function assignment1_21l6053
         % if side-by-side option is selected
         img2 = imread(fullfile(path, file));
         if strcmp(combineMode, 'Side-by-Side')
-            combinedImg = [img img2];
+            % Create a new image with combined dimensions
+            % retrieving the dimensions of image 1
+            [rows1, cols1, channels1] = size(img);
+            % retrieving the dimensions of image 2
+            [rows2, cols2, channels2] = size(img2);
+            % Define target dimensions (resize to the smallest width and height)
+            targetHeight = min(rows1, rows2);
+            targetWidth = min(cols1, cols2);
+            % Resize both images to the target dimensions
+            resizedImg1 = imresize(img1, [targetHeight, targetWidth]);
+            resizedImg2 = imresize(img2, [targetHeight, targetWidth]);
+
+            % Initialize the combined image
+            combinedImg = zeros(targetHeight, targetWidth * 2, channels1, 'like', img1);
+
+            % Combine the images side by side
+            combinedImg(1:r, 1:targetWidth, :) = resizedImg1;
+            combinedImg(:, (targetWidth + 1):(targetWidth * 2), :) = resizedImg2;
         else
             % if overlay mode is selected
-            img2 = imresize(img2, [size(img, 1) size(img, 2)]); % Resize to match
-            combinedImg = max(img, img2); % Overlay using max
+            % Resize to match img2 size with img 1
+            img2 = imresize(img2, [size(img, 1) size(img, 2)]); 
+            % Overlay using max
+            combinedImg = max(img, img2); 
         end
         imshow(combinedImg, 'Parent', axes);
     end

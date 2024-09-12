@@ -226,8 +226,23 @@ function assignment1_21l6053
         % if side-by-side option is selected
         img2 = imread(fullfile(path, file));
         if strcmp(combineMode, 'Side-by-Side')
-            img2 = imresize(img2, size(img), 'OutputSize', size(img));% resizing for consistency 
-            combinedImg = [img img2]; %concatenates the images
+            % Create a new image with combined dimensions
+            % retrieving the dimensions of image 1
+            [rows1, cols1, channels1] = size(img);
+            % retrieving the dimensions of image 2
+            [rows2, cols2, channels2] = size(img2);
+            % resizing to the minimum width and height
+            targetHeight = max(rows1, rows2);
+            % Resizing both images to the target dimensions
+            resizedImg1 = imresize(img, [targetHeight, cols1]);
+            resizedImg2 = imresize(img2, [targetHeight, cols2]);
+            % Initialize the combined image
+            % rows remain same to min rows
+            % columns are sum of columns of both the images
+            combinedImg = zeros(targetHeight, cols1+cols2 , channels1, 'like', img);
+            % Combine the images side by side
+            combinedImg(1:targetHeight, 1:cols1, :) = resizedImg1;
+            combinedImg(1:targetHeight, (cols1 + 1):(cols1+cols2), :) = resizedImg2;
         else
             % if overlay mode is selected
             % Resize to match img2 size with img 1
