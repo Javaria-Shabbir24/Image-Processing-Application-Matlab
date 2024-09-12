@@ -8,7 +8,8 @@ function assignment1_21l6053
     flipDirection = 'Vertical'; 
     % Default combine mode
     combineMode = 'Side-by-Side'; 
-
+    %filepath
+    filePath = [];
     % figure / window for the GUI
     fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 800 600]);
 
@@ -30,6 +31,8 @@ function assignment1_21l6053
             %if a file is selected
             %read the file path
             img = imread(fullfile(path, file)); 
+            % Store the file path
+            filePath = fullfile(path, file); 
             % Display the image in the axes
             imshow(img, 'Parent', axes);  
         end
@@ -61,7 +64,37 @@ function assignment1_21l6053
     end
 % Image Information Button added
 % when the button is pushed showImageInfo function is called
-    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', Position', [150, 350, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 350, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+
+% Function to show image information
+    function showImageInfo()
+        if isempty(img)
+            %if no image is selected
+            disp('No image to display info');
+            return;
+        end
+        % image format
+        infoofimage = imfinfo(filePath);
+        format = infoofimage.Format;
+        % Original file size
+        % details about the file & directory
+        originalFileInfo = dir(filePath); 
+        % getting the size of file in bytes
+        originalFileSize = originalFileInfo.bytes; 
+        % Compressed file size
+        % Temporary path for the compressed image
+        compressedFileName = fullfile(tempdir, 'compressed_image.jpg');
+        % image is compressed with jpg format and 70% quality
+        imwrite(img, compressedFileName, 'jpg', 'Quality', 70);
+        compressedFileInfo = dir(compressedFileName);
+        % getting the size of file in bytes
+        compressedFileSize = compressedFileInfo.bytes;
+        % Compression ratio
+        compressionRatio = originalFileSize / compressedFileSize;
+        % Display Information
+        info = sprintf('Height: %d pixels\nWidth: %d pixels\nFormat: %s\nOriginal File Size: %d bytes\nCompressed File Size: %d bytes\nCompression Ratio:%.2f\n', size(img, 1), size(img, 2), format, originalFileSize,compressedFileSize,compressionRatio);
+        uialert(fig, info, 'Image Information'); % alert message displaying the image information
+    end
 
 
 end
