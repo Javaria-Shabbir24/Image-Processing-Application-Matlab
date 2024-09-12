@@ -4,6 +4,24 @@ function assignment1_21l6053
     fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 900 700]);
 
     % browse button added in fig window
-    % on clicking loadtheImage function will load the image
-    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [250, 500, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());    
+    % on pushing the browse button, loadtheImage function will load the image
+    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [250, 500, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
+
+    % Axes to display the loaded image
+    axes = uiaxes(fig, 'Position', [450 50 450 500]);
+
+    % Function to load the image
+    function loadtheImage()
+        %specified paths
+        [file, path] = uigetfile({'*.jpg;*.jpeg;*.png;*.bmp', 'Image Files (*.jpg, *.jpeg, *.png, *.bmp)'});
+        %if any file is not selected
+        if isequal(file, 0)
+            disp('No file selected');
+        else
+            %if a file is selected
+            img = imread(fullfile(path, file)); %read the file path
+            % Display the image in the axes
+            imshow(img, 'Parent', ax);  
+        end
+    end
 end
