@@ -37,18 +37,18 @@ function assignment1_21l6053
             imshow(img, 'Parent', axes);  
         end
     end
-% Function to set the save format
+    % Function to set the save format
     function setSaveFormat(selectedformat)
         saveFormat = selectedformat;
     end
-% Dropdown for file formats while saving the picture
-% selected format is set to saved format using function setSaveFormat
+    % Dropdown for file formats while saving the picture
+    % selected format is set to saved format using function setSaveFormat
     saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 450, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
 
-% Save button added to save the loaded file
-% on pushing the save button, save image function is triggered
+    % Save button added to save the loaded file
+    % on pushing the save button, save image function is triggered
     saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
-% Function to save the image
+    % Function to save the image
     function saveImage()
         if isempty(img) 
             % if no image loaded
@@ -62,11 +62,11 @@ function assignment1_21l6053
             imwrite(img, fullfile(path, file)); %save image if path selected
         end
     end
-% Image Information Button added
-% when the button is pushed showImageInfo function is called
+    % Image Information Button added
+    % when the button is pushed showImageInfo function is called
     infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 350, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
 
-% Function to show image information
+    % Function to show image information
     function showImageInfo()
         if isempty(img)
             %if no image is selected
@@ -84,8 +84,8 @@ function assignment1_21l6053
         % Compressed file size
         % Temporary path for the compressed image
         compressedFileName = fullfile(tempdir, 'compressed_image.jpg');
-        % image is compressed with jpg format and 70% quality
-        imwrite(img, compressedFileName, 'jpg', 'Quality', 70);
+        % image is compressed with jpg format and 50% quality
+        imwrite(img, compressedFileName, 'jpg', 'Quality', 50);
         compressedFileInfo = dir(compressedFileName);
         % getting the size of file in bytes
         compressedFileSize = compressedFileInfo.bytes;
@@ -95,6 +95,17 @@ function assignment1_21l6053
         info = sprintf('Height: %d pixels\nWidth: %d pixels\nFormat: %s\nOriginal File Size: %d bytes\nCompressed File Size: %d bytes\nCompression Ratio:%.2f\n', size(img, 1), size(img, 2), format, originalFileSize,compressedFileSize,compressionRatio);
         uialert(fig, info, 'Image Information'); % alert message displaying the image information
     end
+    % Conversion of grayscale image to black and white
+    % When the button is pushed, convertToBlackAndWhite function is triggered
+    BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 300, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
 
-
+    % Function to convert image to black and white
+    function convertToBlackAndWhite()
+        if isempty(img)
+            disp('No image to convert');
+            return;
+        end
+        img = rgb2gray(img);
+        imshow(img, 'Parent', axes);
+    end
 end
