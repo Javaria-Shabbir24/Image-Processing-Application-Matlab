@@ -122,7 +122,7 @@ function assignment1_21l6053
     % Prompt for the cropping dialog box
     prompt = {'Enter the x-coordinate of the top-left corner:','Enter the y-coordinate of the top-left corner:', 'Enter the width of the crop rectangle:', 'Enter the height of the crop rectangle:'};
     % Dialog box title
-    dlgtitle = 'Input Coordinates for Cropping';
+    dlgtitle = 'Input';
     % Open the input dialog and retrieve user input as a cell array
     answer = inputdlg(prompt, dlgtitle);
 
@@ -150,10 +150,32 @@ function assignment1_21l6053
         croppedImg = img(ymin:ymax, xmin:xmax, :);
         % Display the cropped image
         imshow(croppedImg, 'Parent', axes);
+    
     else
         disp('User canceled the input.');
     end
-end
+    end
+    % Resize button added
+    % When the button is pushed, cropImage function is triggered
+    resizeButton = uibutton(fig, 'push', 'Text', 'Resize', 'Position', [150, 200, 100, 30], 'ButtonPushedFcn', @(btn, event) resizeImage());
+
+    % Function to resize the image
+    function resizeImage()
+        if isempty(img)
+            disp('No image to resize');
+            return;
+        end
+        prompt = {'Enter new width:', 'Enter new height:'};
+        dlgtitle = 'Resize';
+        dims = inputdlg(prompt, dlgtitle, [1 35; 1 35]);
+        if ~isempty(dims)
+            newWidth = str2double(dims{1});
+            newHeight = str2double(dims{2});
+            img = imresize(img, [newHeight newWidth]);
+            imshow(img, 'Parent', axes);
+        end
+    end
+
 
 
 end
