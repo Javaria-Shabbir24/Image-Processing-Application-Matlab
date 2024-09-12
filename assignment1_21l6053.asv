@@ -37,18 +37,18 @@ function assignment1_21l6053
             imshow(img, 'Parent', axes);  
         end
     end
-% Function to set the save format
+    % Function to set the save format
     function setSaveFormat(selectedformat)
         saveFormat = selectedformat;
     end
-% Dropdown for file formats while saving the picture
-% selected format is set to saved format using function setSaveFormat
+    % Dropdown for file formats while saving the picture
+    % selected format is set to saved format using function setSaveFormat
     saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 450, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
 
-% Save button added to save the loaded file
-% on pushing the save button, save image function is triggered
+    % Save button added to save the loaded file
+    % on pushing the save button, save image function is triggered
     saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
-% Function to save the image
+    % Function to save the image
     function saveImage()
         if isempty(img) 
             % if no image loaded
@@ -62,11 +62,11 @@ function assignment1_21l6053
             imwrite(img, fullfile(path, file)); %save image if path selected
         end
     end
-% Image Information Button added
-% when the button is pushed showImageInfo function is called
+    % Image Information Button added
+    % when the button is pushed showImageInfo function is called
     infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 350, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
 
-% Function to show image information
+    % Function to show image information
     function showImageInfo()
         if isempty(img)
             %if no image is selected
@@ -79,16 +79,85 @@ function assignment1_21l6053
         % Original file size
         % details about the file & directory
         originalFileInfo = dir(filePath); 
-        % getting the size of file
+        % getting the size of file in bytes
         originalFileSize = originalFileInfo.bytes; 
         % Compressed file size
+        % Temporary path for the compressed image
+        compressedFileName = fullfile(tempdir, 'compressed_image.jpg');
+        % image is compressed with jpg format and 50% quality
+        imwrite(img, compressedFileName, 'jpg', 'Quality', 50);
         compressedFileInfo = dir(compressedFileName);
-compressedFileSize = compressedFileInfo.bytes;
-compressionRatio = originalFileSize / compressedFileSize;
-
-        info = sprintf('Height: %d pixels\nWidth: %d pixels\nFormat: %s\nOriginal File Size: %d bytes\nCompressed File Size: %d bytes\nCompression Ratio:%.2f\n', size(img, 1), size(img, 2), format, originalFileSize);
+        % getting the size of file in bytes
+        compressedFileSize = compressedFileInfo.bytes;
+        % Compression ratio
+        compressionRatio = originalFileSize / compressedFileSize;
+        % Display Information
+        info = sprintf('Height: %d pixels\nWidth: %d pixels\nFormat: %s\nOriginal File Size: %d bytes\nCompressed File Size: %d bytes\nCompression Ratio:%.2f\n', size(img, 1), size(img, 2), format, originalFileSize,compressedFileSize,compressionRatio);
         uialert(fig, info, 'Image Information'); % alert message displaying the image information
     end
+    % Conversion of grayscale image to black and white
+    % When the button is pushed, convertToBlackAndWhite function is triggered
+    BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 300, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
+
+    % Function to convert image to black and white
+    function convertToBlackAndWhite()
+        if isempty(img)
+            disp('No image to convert');
+            return;
+        end
+        img = rgb2gray(img);
+        imshow(img, 'Parent', axes);
+    end
+    % Crop Button added
+    % When the button is pushed, cropImage function is triggered
+    cropButton = uibutton(fig, 'push', 'Text', 'Crop', 'Position', [150, 250, 100, 30], 'ButtonPushedFcn', @(btn, event) cropImage());
+    % Function to crop the image
+    function cropImage()
+    % if no image is selected
+    if isempty(img)
+        disp('No image to crop');
+        return;
+    end
+
+    % Prompt for the cropping dialog box
+    prompt = {'Enter the x-coordinate of the top-left corner:','Enter the y-coordinate of the top-left corner:', 'Enter the width of the crop rectangle:', 'Enter the height of the crop rectangle:'};
+    % Dialog box title
+    dlgtitle = 'Input Coordinates for Cropping';
+    % Open the input dialog and retrieve user input as a cell array
+    answer = inputdlg(prompt, dlgtitle);
+
+    % Convert user input from strings to numeric values
+    if ~isempty(answer)
+        x = str2double(answer{1}); % x-coordinate
+        y = str2double(answer{2}); % y-coordinate
+        width = str2double(answer{3}); % width
+        height = str2double(answer{4}); % height
+        % Cropping by setting the specified width and height
+        xmax = x + width - 1; % cropped width
+        ymax = y + height - 1; % cropped height
+        % error handling
+        % Image dimensions
+        [imgHeight, imgWidth, ~] = size(img); 
+        % if width exceed the original width
+        if xmax > imgWidth
+            xmax = imgWidth;
+        end
+
+        if ymax > imgHeight
+            ymax = imgHeight;
+        end
+
+        % Perform manual cropping by selecting a sub-region of the image
+        croppedImg = img(ymin:ymax, xmin:xmax, :);
+
+        % Display the cropped image
+        imshow(croppedImg, 'Parent', axes);
+        % Display the cropped image
+        imshow(croppedImg, 'Parent', axes);
+    else
+        disp('User canceled the input.');
+    end
+end
 
 
 end

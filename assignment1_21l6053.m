@@ -108,4 +108,52 @@ function assignment1_21l6053
         img = rgb2gray(img);
         imshow(img, 'Parent', axes);
     end
+    % Crop Button added
+    % When the button is pushed, cropImage function is triggered
+    cropButton = uibutton(fig, 'push', 'Text', 'Crop', 'Position', [150, 250, 100, 30], 'ButtonPushedFcn', @(btn, event) cropImage());
+    % Function to crop the image
+    function cropImage()
+    % if no image is selected
+    if isempty(img)
+        disp('No image to crop');
+        return;
+    end
+
+    % Prompt for the cropping dialog box
+    prompt = {'Enter the x-coordinate of the top-left corner:','Enter the y-coordinate of the top-left corner:', 'Enter the width of the crop rectangle:', 'Enter the height of the crop rectangle:'};
+    % Dialog box title
+    dlgtitle = 'Input Coordinates for Cropping';
+    % Open the input dialog and retrieve user input as a cell array
+    answer = inputdlg(prompt, dlgtitle);
+
+    % Convert user input from strings to numeric values
+    if ~isempty(answer)
+        xmin = str2double(answer{1}); % x-coordinate
+        ymin = str2double(answer{2}); % y-coordinate
+        width = str2double(answer{3}); % width
+        height = str2double(answer{4}); % height
+        % Cropping by setting the specified width and height
+        xmax = xmin + width - 1; % cropped width
+        ymax = ymin + height - 1; % cropped height
+        % error handling
+        % Image dimensions
+        [imgHeight, imgWidth, ~] = size(img); 
+        % if cropped width exceed the original width
+        if xmax > imgWidth
+            xmax = imgWidth; % set cropped equal to original width size
+        end
+        % if cropped height exceed the original height
+        if ymax > imgHeight
+            ymax = imgHeight; % set cropped equal to original height size
+        end
+        % cropping (height, width, all shades)
+        croppedImg = img(ymin:ymax, xmin:xmax, :);
+        % Display the cropped image
+        imshow(croppedImg, 'Parent', axes);
+    else
+        disp('User canceled the input.');
+    end
+end
+
+
 end
