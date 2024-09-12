@@ -154,8 +154,90 @@ function assignment1_21l6053
     else
         disp('User canceled the input.');
     end
-    % Resizing the Image
+    end
+    % Resize button added
     % When the button is pushed, cropImage function is triggered
-    resizeButton = uibutton(fig, 'push', 'Text', 'Resize', 'Position', [250, 200, 100, 30], 'ButtonPushedFcn', @(btn, event) resizeImage());
+    resizeButton = uibutton(fig, 'push', 'Text', 'Resize', 'Position', [150, 200, 100, 30], 'ButtonPushedFcn', @(btn, event) resizeImage());
+
+    % Function to resize the image
+    function resizeImage()
+        if isempty(img)
+            disp('No image to resize');
+            return;
+        end
+        prompt = {'Enter new width:', 'Enter new height:'};
+        dlgtitle = 'Resize';
+        dims = inputdlg(prompt, dlgtitle, [1 35; 1 35]);
+        if ~isempty(dims)
+            newWidth = str2double(dims{1});
+            newHeight = str2double(dims{2});
+            img = imresize(img, [newHeight newWidth]);
+            imshow(img, 'Parent', axes);
+        end
+    end
+    % Dropdown for flipping options
+    % When the button is pushed, setFlipDirection function is triggered
+    flipDropdown = uidropdown(fig,'Items', {'Vertical', 'Horizontal'},  'Position', [150, 150, 100, 30], 'ValueChangedFcn', @(dd, event) setFlipDirection(dd.Value));
+
+    % Flip button added
+    % When the button is pushed, flipImage function is triggered
+    flipButton = uibutton(fig, 'push', 'Text', 'Flip','Position', [150, 100, 100, 30], 'ButtonPushedFcn', @(btn, event) flipImage());
+ 
+    % Function to flip the image
+    function flipImage()
+        if isempty(img)
+            disp('No image to flip');
+            return;
+        end
+        if strcmp(flipDirection, 'Vertical')
+            img = flipud(img); % flip up-down
+        else
+            img = fliplr(img); % flip left-right
+        end
+        imshow(img, 'Parent', axes);
+    end
+
+    % Function to set the flip direction
+    function setFlipDirection(direction)
+        flipDirection = direction;
+    end
+    % Dropdown Button to select a combining option
+    % When the button is pushed, setCombineMode function is triggered
+    combineDropdown = uidropdown(fig, 'Items', {'Side-by-Side', 'Overlay'},'Position', [150, 50, 100, 30], 'ValueChangedFcn', @(dd, event) setCombineMode(dd.Value));
+
+    % Combine button added
+    % When the button is pushed, combineImage function is triggered
+    combineButton = uibutton(fig, 'push', 'Text', 'Combine','Position', [150, 0, 100, 30], 'ButtonPushedFcn', @(btn, event) combineImage());
+
+    % Function to combine two images
+    function combineImage()
+        % if first image not selected
+        if isempty(img)
+            disp('No image to combine');
+            return;
+        end
+        % select 2nd image
+        [file, path] = uigetfile({'*.jpg;*.jpeg;*.png;*.bmp', 'Image Files (*.jpg, *.jpeg, *.png, *.bmp)'});
+        % if 2nd file not selected
+        if isequal(file, 0)
+            disp('No file selected for combining');
+            return;
+        end
+        % if side-by-side option is selected
+        img2 = imread(fullfile(path, file));
+        if strcmp(combineMode, 'Side-by-Side')
+            combinedImg = [img img2];
+        else
+            % if overlay mode is selected
+            img2 = imresize(img2, [size(img, 1) size(img, 2)]); % Resize to match
+            combinedImg = max(img, img2); % Overlay using max
+        end
+        imshow(combinedImg, 'Parent', axes);
+    end
+
+    % Function to set the selected combine mode
+    function setCombineMode(mode)
+        combineMode = mode;
+    end
 
 end
