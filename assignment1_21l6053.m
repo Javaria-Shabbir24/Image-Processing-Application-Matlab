@@ -1,14 +1,23 @@
 %Image Processing Application
 function assignment1_21l6053
+    % image variable initialized
+    img = []; 
+    % Default format is .jpg
+    saveFormat = '.jpg'; 
+    % Default flip direction
+    flipDirection = 'Vertical'; 
+    % Default combine mode
+    combineMode = 'Side-by-Side'; 
+
     % figure / window for the GUI
-    fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 700 600]);
+    fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 800 600]);
 
     % browse button added in fig window
     % on pushing the browse button, loadtheImage function will load the image
-    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [100, 500, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
+    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 500, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
 
     % Axes to display the loaded image
-    axes = uiaxes(fig, 'Position', [350 50 300 500]);
+    axes = uiaxes(fig, 'Position', [350 50 370 500]);
 
     % Function to load the image
     function loadtheImage()
@@ -25,4 +34,34 @@ function assignment1_21l6053
             imshow(img, 'Parent', axes);  
         end
     end
+% Function to set the save format
+    function setSaveFormat(selectedformat)
+        saveFormat = selectedformat;
+    end
+% Dropdown for file formats while saving the picture
+% selected format is set to saved format using function setSaveFormat
+    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 450, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
+
+% Save button added to save the loaded file
+% on pushing the save button, save image function is triggered
+    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
+% Function to save the image
+    function saveImage()
+        if isempty(img) 
+            % if no image loaded
+            disp('No image to save');
+            return;
+        end
+        [file, path] = uiputfile({['*' saveFormat], ['Image Files (*' saveFormat ')']}, 'Save Image'); %save image with saved format
+        if isequal(file, 0) % if no file path selected
+            disp('No file selected for saving');
+        else
+            imwrite(img, fullfile(path, file)); %save image if path selected
+        end
+    end
+% Image Information Button added
+% when the button is pushed showImageInfo function is called
+    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', Position', [150, 350, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+
+
 end
