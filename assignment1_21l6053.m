@@ -1,5 +1,7 @@
 %Image Processing Application
 function assignment1_21l6053
+    % slider label
+    sliderLabel=[];
     % image variable initialized
     img = []; 
     % Default format is .jpg
@@ -11,14 +13,14 @@ function assignment1_21l6053
     %filepath
     filePath = [];
     % figure / window for the GUI
-    fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 800 600]);
+    fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 800 700]);
 
     % browse button added in fig window
     % on pushing the browse button, loadtheImage function will load the image
-    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 550, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
+    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 650, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
 
     % Axes to display the loaded image
-    axes = uiaxes(fig, 'Position', [350 50 370 500]);
+    axes = uiaxes(fig, 'Position', [350 50 370 570]);
 
     % Function to load the image
     function loadtheImage()
@@ -43,11 +45,11 @@ function assignment1_21l6053
     end
     % Dropdown for file formats while saving the picture
     % selected format is set to saved format using function setSaveFormat
-    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 500, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
+    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 600, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
 
     % Save button added to save the loaded file
     % on pushing the save button, save image function is triggered
-    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 450, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
+    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 550, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
     % Function to save the image
     function saveImage()
         if isempty(img) 
@@ -64,7 +66,7 @@ function assignment1_21l6053
     end
     % Image Information Button added
     % when the button is pushed showImageInfo function is called
-    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 450, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
 
     % Function to show image information
     function showImageInfo()
@@ -96,6 +98,17 @@ function assignment1_21l6053
         uialert(fig, info, 'Image Information'); % alert message displaying the image information
     end
     % Conversion of grayscale image to black and white
+    % Slider for adjusting the threshold
+    % When the button is pushed, updateThresholdLabel function is triggered
+    slider = uislider(fig, 'Position', [30, 430, 300, 3], 'Limits', [0, 1], 'ValueChangedFcn', @(src, event) updateThresholdLabel(src, sliderLabel));
+
+    % Label for the slider
+    sliderLabel = uilabel(fig, 'Position', [150, 350, 100, 30], 'Text', sprintf('Threshold: %.2f', slider.Value));
+
+    % Function to update the threshold label
+    function updateThresholdLabel(slider, sliderLabel)
+        sliderLabel.Text = sprintf('Threshold: %.2f', slider.Value);
+    end
     % When the button is pushed, convertToBlackAndWhite function is triggered
     BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 350, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
 
@@ -105,8 +118,20 @@ function assignment1_21l6053
             disp('No image to convert');
             return;
         end
-        img = rgb2gray(img);
-        imshow(img, 'Parent', axes);
+        % Converting the image to grayscale if it is not already
+        if size(img, 3) == 3
+            grayImg = rgb2gray(img);
+        else
+            grayImg = img;
+        end
+        % Get the threshold value from the slider
+        threshold = slider.Value;
+        % Convert grayscale image to black and white based on the threshold
+        % pixels in graImg that are greater than threshold*255 will be set
+        % to true and returns 1 (black) and viceversa
+        bwImg = grayImg > threshold * 255; % Threshold is scaled to [0, 255]
+        % Display the black and white image
+        imshow(bwImg, 'Parent', axes);
     end
     % Crop Button added
     % When the button is pushed, cropImage function is triggered

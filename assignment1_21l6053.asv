@@ -1,5 +1,7 @@
 %Image Processing Application
 function assignment1_21l6053
+    % slider label
+    sliderLabel=[];
     % image variable initialized
     img = []; 
     % Default format is .jpg
@@ -11,14 +13,14 @@ function assignment1_21l6053
     %filepath
     filePath = [];
     % figure / window for the GUI
-    fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 800 600]);
+    fig = uifigure('Name', 'Image Processing GUI', 'Position', [100 100 800 700]);
 
     % browse button added in fig window
     % on pushing the browse button, loadtheImage function will load the image
-    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 550, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
+    browseButton = uibutton(fig, 'push', 'Text', 'Browse','Position', [150, 650, 100, 30], 'ButtonPushedFcn', @(btn, event) loadtheImage());   
 
     % Axes to display the loaded image
-    axes = uiaxes(fig, 'Position', [350 50 370 500]);
+    axes = uiaxes(fig, 'Position', [350 50 370 570]);
 
     % Function to load the image
     function loadtheImage()
@@ -43,11 +45,11 @@ function assignment1_21l6053
     end
     % Dropdown for file formats while saving the picture
     % selected format is set to saved format using function setSaveFormat
-    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 500, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
+    saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 600, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
 
     % Save button added to save the loaded file
     % on pushing the save button, save image function is triggered
-    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 450, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
+    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 550, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
     % Function to save the image
     function saveImage()
         if isempty(img) 
@@ -64,7 +66,7 @@ function assignment1_21l6053
     end
     % Image Information Button added
     % when the button is pushed showImageInfo function is called
-    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 400, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 450, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
 
     % Function to show image information
     function showImageInfo()
@@ -96,6 +98,17 @@ function assignment1_21l6053
         uialert(fig, info, 'Image Information'); % alert message displaying the image information
     end
     % Conversion of grayscale image to black and white
+    % Slider for adjusting the threshold
+    % When the button is pushed, updateThresholdLabel function is triggered
+    slider = uislider(fig, 'Position', [150, 385, 00, 3], 'Limits', [0, 1], 'ValueChangedFcn', @(src, event) updateThresholdLabel(src, sliderLabel));
+
+    % Label for the slider
+    sliderLabel = uilabel(fig, 'Position', [150, 370, 100, 30], 'Text', sprintf('Threshold: %.2f', slider.Value));
+
+    % Function to update the threshold label
+    function updateThresholdLabel(slider, sliderLabel)
+        sliderLabel.Text = sprintf('Threshold: %.2f', slider.Value);
+    end
     % When the button is pushed, convertToBlackAndWhite function is triggered
     BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 350, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
 
@@ -231,19 +244,18 @@ function assignment1_21l6053
             [rows1, cols1, channels1] = size(img);
             % retrieving the dimensions of image 2
             [rows2, cols2, channels2] = size(img2);
-            % Define target dimensions (resize to the smallest width and height)
-            targetHeight = min(rows1, rows2);
-            targetWidth = min(cols1, cols2);
-            % Resize both images to the target dimensions
-            resizedImg1 = imresize(img1, [targetHeight, targetWidth]);
-            resizedImg2 = imresize(img2, [targetHeight, targetWidth]);
-
+            % resizing to the minimum width and height
+            targetHeight = max(rows1, rows2);
+            % Resizing both images to the target dimensions
+            resizedImg1 = imresize(img, [targetHeight, cols1]);
+            resizedImg2 = imresize(img2, [targetHeight, cols2]);
             % Initialize the combined image
-            combinedImg = zeros(targetHeight, targetWidth * 2, channels1, 'like', img1);
-
+            % rows remain same to min rows
+            % columns are sum of columns of both the images
+            combinedImg = zeros(targetHeight, cols1+cols2 , channels1, 'like', img);
             % Combine the images side by side
-            combinedImg(1:r, 1:targetWidth, :) = resizedImg1;
-            combinedImg(:, (targetWidth + 1):(targetWidth * 2), :) = resizedImg2;
+            combinedImg(1:targetHeight, 1:cols1, :) = resizedImg1;
+            combinedImg(1:targetHeight, (cols1 + 1):(cols1+cols2), :) = resizedImg2;
         else
             % if overlay mode is selected
             % Resize to match img2 size with img 1
