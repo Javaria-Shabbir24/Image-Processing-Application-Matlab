@@ -1,7 +1,5 @@
 %Image Processing Application
 function assignment1_21l6053
-    % slider label
-    sliderLabel=[];
     % image variable initialized
     img = []; 
     % Default format is .jpg
@@ -25,7 +23,7 @@ function assignment1_21l6053
     % Function to load the image
     function loadtheImage()
         %specified paths
-        [file, path] = uigetfile({'*.jpg;*.jpeg;*.png;*.bmp', 'Image Files (*.jpg, *.jpeg, *.png, *.bmp)'});
+        [file, path] = uigetfile({'*.jpg;*.tiff;*.png;*.bmp', 'Image Files (*.jpg, *.tiff, *.png, *.bmp)'});
         %if any file is not selected
         if isequal(file, 0)
             disp('No file selected');
@@ -47,9 +45,21 @@ function assignment1_21l6053
     % selected format is set to saved format using function setSaveFormat
     saveDropdown = uidropdown(fig,'Items', {'.jpg', '.png', '.bmp', '.tiff'},'Position', [150, 600, 100, 30],  'ValueChangedFcn', @(dd, event) setSaveFormat(dd.Value));
 
+    % Slider for selecting compression level
+    % Label to display the current compression level
+    compressionLabel = uilabel(fig, 'Position', [160, 530, 100, 30], 'Text', sprintf('Compression'));
+
+    % updateCompressionLabel function is triggered
+    compressionSlider = uislider(fig, 'Position', [30, 590, 300, 3], 'Limits', [0, 1], 'ValueChangedFcn', @(src, event) updateCompressionLabel(src, compressionLabel));
+
+    % Function to update the compression level label
+    function updateCompressionLabel(slider, label)
+        label.Text = sprintf('Compression: %.2f', slider.Value);
+    end
+  
     % Save button added to save the loaded file
     % on pushing the save button, save image function is triggered
-    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 550, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
+    saveButton = uibutton(fig, 'push', 'Text', 'Save', 'Position', [150, 500, 100, 30], 'ButtonPushedFcn', @(btn, event) saveImage());
     % Function to save the image
     function saveImage()
         if isempty(img) 
@@ -60,13 +70,25 @@ function assignment1_21l6053
         [file, path] = uiputfile({['*' saveFormat], ['Image Files (*' saveFormat ')']}, 'Save Image'); %save image with saved format
         if isequal(file, 0) % if no file path selected
             disp('No file selected for saving');
+        
+        % Check if the format is jpg
+        if (strcmp(saveFormat, '.jpg'))
+            % Current compression level from the slider
+            compressionLevel = compressionSlider.Value;
+            % Convert compression level to a range suitable for JPEG 
+            % MATLAB's range is 0 to 100
+            compressionQuality = round(compressionLevel * 100);
+            % Save the image with compression quality
+            imwrite(img, fullfile(path, file), 'jpg', 'Quality', compressionQuality);
+       
+        end
         else
             imwrite(img, fullfile(path, file)); %save image if path selected
         end
     end
     % Image Information Button added
     % when the button is pushed showImageInfo function is called
-    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 450, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
+    infoButton = uibutton(fig, 'push', 'Text', 'Image Info', 'Position', [150, 460, 100, 30], 'ButtonPushedFcn', @(btn, event) showImageInfo());
 
     % Function to show image information
     function showImageInfo()
@@ -99,16 +121,18 @@ function assignment1_21l6053
     end
     % Conversion of grayscale image to black and white
     % Slider for adjusting the threshold
-    % When the button is pushed, updateThresholdLabel function is triggered
-    slider = uislider(fig, 'Position', [30, 430, 300, 3], 'Limits', [0, 1], 'ValueChangedFcn', @(src, event) updateThresholdLabel(src, sliderLabel));
+    % Create the label for the slider
+    sliderLabel = uilabel(fig, 'Position', [170, 380, 100, 30], 'Text', sprintf('Threshold'));
 
-    % Label for the slider
-    sliderLabel = uilabel(fig, 'Position', [150, 350, 100, 30], 'Text', sprintf('Threshold: %.2f', slider.Value));
+    % Create the slider
+    slider = uislider(fig, 'Position', [30, 440, 300, 3], 'Limits', [0, 1], 'ValueChangedFcn', @(src, event) updateThresholdLabel(src, sliderLabel));
 
-    % Function to update the threshold label
+    % Function to update the slider label
     function updateThresholdLabel(slider, sliderLabel)
+        % Update the label text with the current slider value
         sliderLabel.Text = sprintf('Threshold: %.2f', slider.Value);
     end
+
     % When the button is pushed, convertToBlackAndWhite function is triggered
     BlackandWhiteButton = uibutton(fig, 'push', 'Text', 'Convert to Black and White','Position', [120, 350, 160, 30], 'ButtonPushedFcn', @(btn, event) convertToBlackAndWhite());
 
