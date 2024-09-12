@@ -75,7 +75,7 @@ function assignment1_21l6053
         if (strcmp(saveFormat, '.jpg'))
             % Current compression level from the slider
             compressionLevel = compressionSlider.Value;
-            % Convert compression level to a range suitable for JPEG 
+            % Convert compression level to a range suitable for JPG 
             % MATLAB's range is 0 to 100
             compressionQuality = round(compressionLevel * 100);
             % Save the image with compression quality
